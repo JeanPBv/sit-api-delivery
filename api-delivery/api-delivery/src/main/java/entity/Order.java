@@ -3,6 +3,7 @@ package entity;
 import org.springframework.cglib.core.Local;
 
 import java.time.LocalTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
@@ -15,14 +16,14 @@ public class Order {
     private LocalTime estimatedDeliveryTime;
     private List<Food> items;
 
-    public Order(String id, String customerName, String customerEmail, String status, LocalTime creationTime, LocalTime estimatedDeliveryTime, List<Food> items) {
+    public Order(String id, String customerName, String customerEmail, String status, LocalTime creationTime, LocalTime estimatedDeliveryTime) {
         this.id = id;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
         this.status = status;
         this.creationTime = creationTime;
         this.estimatedDeliveryTime = estimatedDeliveryTime;
-        this.items = items;
+        this.items = new ArrayList<>();
     }
 
     public String getId() {
@@ -71,6 +72,10 @@ public class Order {
 
     public void setEstimatedDeliveryTime(LocalTime estimatedDeliveryTime) {
         this.estimatedDeliveryTime = estimatedDeliveryTime;
+    }
+
+    public void addItem(Food food){
+        this.items.add(food);
     }
 
 }
