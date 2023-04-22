@@ -1,6 +1,4 @@
-package entity;
-
-import org.springframework.cglib.core.Local;
+package com.delivery.apidelivery.entity;
 
 import java.time.LocalTime;
 import java.util.ArrayList;
@@ -16,14 +14,14 @@ public class Order {
     private LocalTime estimatedDeliveryTime;
     private List<Food> items;
 
-    public Order(String id, String customerName, String customerEmail, String status, LocalTime creationTime, LocalTime estimatedDeliveryTime) {
+    public Order(String id, String customerName, String customerEmail,List<Food> items) {
         this.id = id;
         this.customerName = customerName;
         this.customerEmail = customerEmail;
-        this.status = status;
-        this.creationTime = creationTime;
-        this.estimatedDeliveryTime = estimatedDeliveryTime;
-        this.items = new ArrayList<>();
+        this.status = "En proceso";
+        this.creationTime = LocalTime.now();
+        this.estimatedDeliveryTime = null;
+        this.items = items;
     }
 
     public String getId() {
@@ -74,8 +72,19 @@ public class Order {
         this.estimatedDeliveryTime = estimatedDeliveryTime;
     }
 
-    public void addItem(Food food){
-        this.items.add(food);
+    public List<Food> getItems() {
+        return items;
     }
 
+    public void setItems(List<Food> items) {
+        this.items = items;
+    }
+
+    public double priceTotal(){
+       double montoTotal = 0;
+        for (Food oF: items) {
+            montoTotal = montoTotal + oF.getPrice();
+        }
+        return montoTotal;
+    }
 }

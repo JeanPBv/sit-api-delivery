@@ -1,10 +1,10 @@
-package controller;
+package com.delivery.apidelivery.controller;
 
-import entity.Food;
+import com.delivery.apidelivery.entity.Food;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import services.OrderService;
+import com.delivery.apidelivery.services.OrderService;
 
 import java.util.List;
 
@@ -12,7 +12,8 @@ import java.util.List;
 @RequestMapping("/delivery")
 public class OrderController {
 
-    private OrderService orderService;
+
+    private final OrderService orderService;
 
     public OrderController(OrderService orderService) {
         this.orderService = orderService;
@@ -23,8 +24,8 @@ public class OrderController {
         return ResponseEntity.ok(this.orderService.getAllFoods());
     }
 
-    @PostMapping("/mostMenu")
-    public ResponseEntity<Food> addCars(@RequestBody Food food){
+    @PostMapping("/amenu")
+    public ResponseEntity<Food> addFood(@RequestBody Food food){
         this.orderService.addFood(food);
         return new ResponseEntity<>(food, HttpStatus.CREATED);
     }

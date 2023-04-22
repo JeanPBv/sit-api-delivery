@@ -1,4 +1,4 @@
-package entity;
+package com.delivery.apidelivery.entity;
 
 public class Food {
     private String name;
