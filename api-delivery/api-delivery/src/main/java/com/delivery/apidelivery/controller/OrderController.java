@@ -29,26 +29,27 @@ public class OrderController {
     public ResponseEntity<List<Food>> getAllFoods(){
         return ResponseEntity.ok(this.orderService.getAllFoods());
     }
-
     @PostMapping("/amenu")
     public ResponseEntity<Food> addFood(@RequestBody Food food){
         this.orderService.addFood(food);
         return new ResponseEntity<>(food, HttpStatus.CREATED);
     }
-    @GetMapping("/menu/orders")
-    public ResponseEntity<List<Order>> getAllOrders(){
-        return  ResponseEntity.ok(this.orderService.getAllOrders());
+    @GetMapping("/menu/platos/mostrar")
+    public ResponseEntity<List<Food>> getAllItems(){
+        return ResponseEntity.ok(this.orderService.getAllItems());
     }
-
     @PostMapping("/menu/platos")
     public ResponseEntity<Food> addItems(@RequestBody Food food){
         this.orderService.addItems(food);
         return new ResponseEntity<>(food,HttpStatus.CREATED);
     }
-
+    @GetMapping("/menu/orders")
+    public ResponseEntity<List<Order>> getAllOrders(){
+        return  ResponseEntity.ok(this.orderService.getAllOrders());
+    }
     @PostMapping("/menu/aorders")
     public ResponseEntity<Order> newOrder(@RequestBody Order order){
-        this.orderService.newOrder(order.getId(),order.getCustomerName(), order.getCustomerEmail());
+        this.orderService.newOrder(order);
         return new ResponseEntity<>(order, HttpStatus.CREATED);
     }
 
@@ -56,19 +57,23 @@ public class OrderController {
     public ResponseEntity<Order> mostrarPorID(@PathVariable String id){
         Optional<Order> optinalOrder = this.orderService.mostrarPorID(id);
         if(optinalOrder.isPresent()){
-            return ResponseEntity
+            return ResponseEntity.ok(optinalOrder.get());
         }
+        return ResponseEntity.notFound().build();
     }
 
-    public double calcularPrecio(String id){
-        Optional<Order> optionalOrder = mostrarPorID(id);
-        if(optionalOrder.isPresent()){
-            Order order = optionalOrder.get();
-            return order.priceTotal();
-        }
-        return 0;
+    @GetMapping("/order/status/{id}")
+    public ResponseEntity<String> mostrarStatus(@PathVariable String id){
+        String cadena = this.orderService.mostrarStatus(id);
+        return ResponseEntity.ok(cadena);
     }
 
+    @GetMapping("/order/precio/{id}")
+    public ResponseEntity<Double> calcularPrecio(@PathVariable String id){
+        double precio = this.orderService.calcularPrecio(id);
+        return ResponseEntity.ok(precio);
+    }
+/*
     //Cambiar Estado de Pedido
     public Order cambiarStatus(String id, String status){
         Optional<Order> optionalOrder = mostrarPorID(id);
@@ -78,16 +83,8 @@ public class OrderController {
             return order;
         }
         return null;
-    }
+    }*/
 
     //Mostrar estado de Pedido, la hora de creación y la hora de estimación
-    public String mostrarStatus(String id){
-        Optional<Order> optionalOrder = mostrarPorID(id);
-        if(optionalOrder.isPresent()){
-            Order order = optionalOrder.get();
-            return order.getStatus() + order.getCreationTime() + order.getEstimatedDeliveryTime();
-        }
-        return null;
-    }
 
 }

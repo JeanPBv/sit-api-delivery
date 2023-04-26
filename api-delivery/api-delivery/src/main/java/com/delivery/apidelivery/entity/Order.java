@@ -23,6 +23,14 @@ public class Order {
         this.items = items;
     }
 
+    public void setItems(List<Food> items) {
+        this.items = items;
+    }
+
+    public List<Food> getItems() {
+        return items;
+    }
+
     public String getId() {
         return id;
     }

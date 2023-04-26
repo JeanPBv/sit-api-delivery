@@ -40,14 +40,17 @@ public class OrderService {
     public void addItems(Food food){
         this.listFood.add(food);
     }
+    public List<Food> getAllItems(){
+        return this.listFood;
+    }
 
 
     //OrdernarPedido y Calcular el precio total
-    public void newOrder(String id, String customerName, String customerEmail){
-        order = new Order(id, customerName,customerEmail,listFood);
+    public void newOrder(Order order){
         LocalTime estimated = order.getCreationTime();
         estimated = estimated.plusMinutes(listFood.size() * 10L);
         order.setEstimatedDeliveryTime(estimated);
+        order.setItems(listFood);
         listOrder.add(order);
     }
 
@@ -80,9 +83,9 @@ public class OrderService {
         Optional<Order> optionalOrder = mostrarPorID(id);
         if(optionalOrder.isPresent()){
             Order order = optionalOrder.get();
-            return order.getStatus() + order.getCreationTime() + order.getEstimatedDeliveryTime();
+            return "Estado: " + order.getStatus()+", Creación: " + order.getCreationTime()+", Estimación: " + order.getEstimatedDeliveryTime();
         }
-        return null;
+        return "null";
     }
 
     public List<Food> getListFoodMenu() {
@@ -97,3 +100,16 @@ public class OrderService {
         return listFood;
     }
 }
+    /*public void addPlatos(int cantidad) throws IOException {
+            String name;
+            for (int i=0; i<cantidad; i++){
+                System.out.print("Ingresa el nombre del plato: ");
+                BufferedReader br = null;
+                name = br.readLine();
+                for (Food oFood: listFoodMenu) {
+                    if(oFood.getName().equals(name)){
+                        listFood.add(oFood);
+                    }
+                }
+            }
+        }*/
