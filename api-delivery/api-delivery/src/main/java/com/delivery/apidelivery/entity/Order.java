@@ -1,7 +1,6 @@
 package com.delivery.apidelivery.entity;
 
 import java.time.LocalTime;
-import java.util.ArrayList;
 import java.util.List;
 
 public class Order {
@@ -72,13 +71,6 @@ public class Order {
         this.estimatedDeliveryTime = estimatedDeliveryTime;
     }
 
-    public List<Food> getItems() {
-        return items;
-    }
-
-    public void setItems(List<Food> items) {
-        this.items = items;
-    }
 
     public double priceTotal(){
        double montoTotal = 0;
@@ -86,5 +78,18 @@ public class Order {
             montoTotal = montoTotal + oF.getPrice();
         }
         return montoTotal;
+    }
+
+    @Override
+    public String toString() {
+        return "Order{" +
+                "id='" + id + '\'' +
+                ", customerName='" + customerName + '\'' +
+                ", customerEmail='" + customerEmail + '\'' +
+                ", status='" + status + '\'' +
+                ", creationTime=" + creationTime +
+                ", estimatedDeliveryTime=" + estimatedDeliveryTime +
+                ", items=" + items +
+                '}';
     }
 }

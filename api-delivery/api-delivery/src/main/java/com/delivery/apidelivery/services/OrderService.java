@@ -8,15 +8,20 @@ import java.io.*;
 import java.time.LocalTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class OrderService {
 
     private final List<Food> listFoodMenu;
     private final List<Order> listOrder;
+    private List<Food> listFood;
+    private Order order;
 
     public OrderService(){
         this.listFoodMenu= new ArrayList<>();
         this.listOrder = new ArrayList<>();
+        this.listFood = new ArrayList<>();
     }
 
     //Mostrar y Agregar comidas a la lista de Menu
@@ -28,51 +33,67 @@ public class OrderService {
         return this.listFoodMenu;
     }
 
-    public List<Food> ordenar(int cantidad) throws IOException {
-        String name;
-        List<Food> listFood = new ArrayList<>();
-        for (int i=0; i<cantidad; i++){
-            System.out.print("Ingresa el nombre del plato: ");
-            BufferedReader br = null;
-            name = br.readLine();
-            for (Food oFood: listFoodMenu) {
-                if(oFood.getName().equals(name)){
-                    listFood.add(oFood);
-                }
-            }
-        }
-        return listFood;
+    public List<Order> getAllOrders(){
+        return  this.listOrder;
     }
+
+    public void addItems(Food food){
+        this.listFood.add(food);
+    }
+
+
     //OrdernarPedido y Calcular el precio total
-    public void newOrder(int cantidad, String id, String customerName, String customerEmail) throws IOException {
-        List<Food> listfood= ordenar(cantidad);
-        Order order = new Order(id, customerName,customerEmail,listfood);
+    public void newOrder(String id, String customerName, String customerEmail){
+        order = new Order(id, customerName,customerEmail,listFood);
         LocalTime estimated = order.getCreationTime();
-        estimated = estimated.plusMinutes(listfood.size() * 10L);
+        estimated = estimated.plusMinutes(listFood.size() * 10L);
         order.setEstimatedDeliveryTime(estimated);
         listOrder.add(order);
-        System.out.println("Orden realizada");
-        System.out.println("El total del pedido es: " + order.priceTotal());
+    }
+
+    public Optional<Order> mostrarPorID(String id){
+        return this.listOrder.stream().filter( order -> order.getId().equals(id)).findFirst();
+    }
+
+    public double calcularPrecio(String id){
+        Optional<Order> optionalOrder = mostrarPorID(id);
+        if(optionalOrder.isPresent()){
+            Order order = optionalOrder.get();
+            return order.priceTotal();
+        }
+        return 0;
     }
 
     //Cambiar Estado de Pedido
-    public void cambiarStatus(String id, String status){
-        for (Order oOrd: listOrder) {
-            if(oOrd.getId().equals(id)){
-                oOrd.setStatus(status);
-            }
+    public Order cambiarStatus(String id, String status){
+        Optional<Order> optionalOrder = mostrarPorID(id);
+        if(optionalOrder.isPresent()){
+            Order order = optionalOrder.get();
+            order.setStatus(status);
+            return order;
         }
+            return null;
     }
 
     //Mostrar estado de Pedido, la hora de creación y la hora de estimación
     public String mostrarStatus(String id){
-        for (Order oOrd: listOrder) {
-            if(oOrd.getId().equals(id)){
-                System.out.println("El pedido con id: " + oOrd.getId() + " , perteneciente al cliente: " + oOrd.getCustomerName() + "es: " );
-               return "Estado: "+ oOrd.getStatus()+ "Fecha de Creación: " +oOrd.getCreationTime()+ "Hora estimada:" + oOrd.getEstimatedDeliveryTime();
-            }
+        Optional<Order> optionalOrder = mostrarPorID(id);
+        if(optionalOrder.isPresent()){
+            Order order = optionalOrder.get();
+            return order.getStatus() + order.getCreationTime() + order.getEstimatedDeliveryTime();
         }
-        return "Pedido no encontrado";
+        return null;
     }
 
+    public List<Food> getListFoodMenu() {
+        return listFoodMenu;
+    }
+
+    public List<Order> getListOrder() {
+        return listOrder;
+    }
+
+    public List<Food> getListFood() {
+        return listFood;
+    }
 }
